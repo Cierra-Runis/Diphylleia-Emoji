@@ -19,7 +19,7 @@ from pathlib import Path
 
 
 _NOTO_FAMILY_NAME = "Noto Color Emoji"
-_NOTO_SVG_DIR = Path("svg")
+_NOTO_SVG_DIR = Path("2D/svg")
 _REGIONAL_INDICATORS = {
     Path(_NOTO_SVG_DIR / f"emoji_u{i:x}.svg") for i in range(0x1F1E6, 0x1F1FF + 1)
 }
@@ -39,7 +39,7 @@ def _write_config(config_name, output_file, svg_files):
         assert _CONFIG_DIR.joinpath(
             svg_file
         ).is_file(), f"{svg_file} not found relative to {_CONFIG_DIR}"
-    svg_list = ",\n    ".join(f'"{f}"' for f in sorted(svg_files)).rstrip()
+    svg_list = ",\n    ".join(f'"{f.as_posix()}"' for f in sorted(svg_files)).rstrip()
     with open(_CONFIG_DIR / config_file, "w") as f:
         f.write(
             f"""

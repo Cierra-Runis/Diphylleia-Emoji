@@ -1,3 +1,16 @@
+# Diphylleia Emoji
+
+A fork of [Noto Emoji](https://github.com/googlefonts/noto-emoji) that builds
+the web font family `Diphylleia Emoji`, published as
+[`@diphylleia/emoji`](npm/README.md). `2D/fonts` holds the fonts built by the
+pipeline in `full_rebuild.sh` (the "Rebuild fonts from sources" workflow runs
+it); [`web_fonts.py`](web_fonts.py) derives the web fonts and stylesheets in
+`npm/`. Fonts are under the [SIL Open Font License 1.1](2D/fonts/LICENSE),
+tools under [Apache 2.0](LICENSE), as in Noto Emoji. Everything below is Noto
+Emoji's own README.
+
+---
+
 ![Noto](https://substackcdn.com/image/fetch/w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fab4b4276-9bb0-42a6-a675-510fcb6055df_1940x1088.png)
 # Noto Emoji
 Noto Emoji (Stands for No Tofu) is an open source (Open Font License 1.1) emoji library that provides standard Unicode emoji support and tools for working with them including:

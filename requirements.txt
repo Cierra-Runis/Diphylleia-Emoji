@@ -1,4 +1,4 @@
-fonttools>=4.59.1
+fonttools[woff]>=4.59.1
 notofonttools>=0.3.2
 nanoemoji >= 0.15.8
 pytest>=8.4

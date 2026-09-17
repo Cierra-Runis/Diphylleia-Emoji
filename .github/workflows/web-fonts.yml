@@ -1,0 +1,68 @@
+name: Web fonts
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths:
+      - 2D/fonts/**
+      - web_fonts.py
+      - npm/**
+      - requirements.txt
+      - .github/workflows/web-fonts.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # GitHub release on tags
+      id-token: write   # npm provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - run: pip install "fonttools[woff]>=4.59.1"
+
+      - name: Build
+        env:
+          # fontTools writes this into head.modified, keeping builds byte-identical.
+          SOURCE_DATE_EPOCH: "0"
+        run: |
+          python web_fonts.py
+          python web_fonts.py --noflags
+
+      - name: Check the committed stylesheets match the fonts
+        run: git diff --exit-code -- npm/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: diphylleia-emoji
+          path: npm/dist/
+
+      - name: Check the tag matches package.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          version=$(node -p "require('./npm/package.json').version")
+          test "v$version" = "$GITHUB_REF_NAME" || { echo "tag $GITHUB_REF_NAME != v$version"; exit 1; }
+
+      - uses: actions/setup-node@v4
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Publish to npm
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: npm publish ./npm --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: gh release create "$GITHUB_REF_NAME" npm/dist/* --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}

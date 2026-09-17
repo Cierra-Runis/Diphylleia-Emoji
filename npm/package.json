@@ -1,0 +1,21 @@
+{
+  "name": "@diphylleia/emoji",
+  "version": "0.1.0",
+  "description": "Diphylleia Emoji: Noto Color Emoji built from source for the web, COLRv1 for Chromium and Firefox, sbix for Safari.",
+  "license": "OFL-1.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cierra-Runis/Diphylleia-Emoji.git"
+  },
+  "homepage": "https://github.com/Cierra-Runis/Diphylleia-Emoji",
+  "keywords": ["font", "webfont", "woff2", "emoji", "color-font", "noto-color-emoji", "diphylleia"],
+  "style": "diphylleia-emoji.css",
+  "files": ["dist/", "diphylleia-emoji.css", "diphylleia-emoji-noflags.css"],
+  "exports": {
+    ".": "./diphylleia-emoji.css",
+    "./diphylleia-emoji.css": "./diphylleia-emoji.css",
+    "./diphylleia-emoji-noflags.css": "./diphylleia-emoji-noflags.css",
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  }
+}

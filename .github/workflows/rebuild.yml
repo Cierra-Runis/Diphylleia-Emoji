@@ -1,0 +1,53 @@
+name: Rebuild fonts from sources
+
+# The pipeline from full_rebuild.sh, minus the Android emojicompat variants.
+# Run it after changing anything under 2D/png, 2D/svg or third_party, then
+# download the artifact and commit the fonts to 2D/fonts.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libcairo2-dev imagemagick pngquant zopfli libharfbuzz-bin
+          pip install -r requirements.txt
+
+      - name: CBDT
+        run: |
+          python size_check.py
+          make -j "$(nproc)"
+          mv *.ttf 2D/fonts/
+          rm -f 2D/fonts/NotoColorEmoji-noflags.ttf
+          python drop_flags.py 2D/fonts/NotoColorEmoji.ttf
+
+      - name: COLRv1
+        run: |
+          python colrv1_generate_configs.py
+          git diff --stat colrv1/
+          (cd colrv1 && rm -rf build/ && nanoemoji *.toml)
+          cp colrv1/build/NotoColorEmoji.ttf 2D/fonts/Noto-COLRv1.ttf
+          cp colrv1/build/NotoColorEmoji-noflags.ttf 2D/fonts/Noto-COLRv1-noflags.ttf
+          python colrv1_postproc.py
+
+      - name: Flags-only
+        run: |
+          hb-subset --unicodes-file=flags-only-unicodes.txt \
+            --output-file=2D/fonts/NotoColorEmoji-flagsonly.ttf 2D/fonts/NotoColorEmoji.ttf
+          python update_flag_name.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rebuilt-fonts
+          path: 2D/fonts/
