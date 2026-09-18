@@ -16,8 +16,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # GitHub release on tags
-      id-token: write   # npm provenance
+      contents: write # GitHub release on tags
+      id-token: write # npm provenance
     steps:
       - uses: actions/checkout@v4
 
@@ -55,11 +55,11 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
-      - name: Publish to npm
+      - name: Stage on npm
         if: startsWith(github.ref, 'refs/tags/v')
-        run: npm publish ./npm --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm install -g npm@latest
+          npm stage publish ./npm --access public
 
       - name: GitHub release
         if: startsWith(github.ref, 'refs/tags/v')
