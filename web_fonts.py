@@ -293,7 +293,7 @@ def main():
     save_woff2(sbix, args.out / f"DiphylleiaEmoji-sbix{suffix}.woff2")
 
     css = ROOT / "npm" / f"diphylleia-emoji{suffix}.css"
-    css.write_text(stylesheet(colr, sbix, suffix), encoding="utf-8")
+    css.write_text(stylesheet(colr, sbix, suffix), encoding="utf-8", newline="\n")
     print(css)
 
 
